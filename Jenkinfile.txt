@@ -1,0 +1,26 @@
+pipeline {
+    agent any
+
+    tools {
+        maven "Maven"
+        jdk "OpenJDK17"
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                bat 'mvn clean compile package -f ./tempconversion/pom.xml'
+            }
+        }
+        stage('Test') {
+            steps {
+                bat 'mvn test -f ./tempconversion/pom.xml'
+            }
+            post {
+                always {
+                    archiveArtifacts '**/*.jar'
+                }
+            }
+        }
+    }
+}
